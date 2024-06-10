@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="dashboard-css.css">
+    <link rel="stylesheet" href="admin-page.css">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/product-insert.css">
+    <script src="https://kit.fontawesome.com/f583506d59.js" crossorigin="anonymous"></script>
+</head>
+
+<body id="dashboard-body" style="visibility: hidden;">
+    <div class="sidebar">
+         <div class="logo"></div> 
+        <ul class="menu">
+            <li class="active" onclick="redirectTo('/adminPage')">
+                <div class="redirect">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                    </div>
+            </li>
+           
+            <li class="menu-btn">
+                <div class="redirect">
+                    <i class="fas fa-briefcase"></i>
+                    <span >Admin <i class="fas fa-angle-right dropdown"></i></span>  
+                </div>
+            </li>
+            <a class="sub-menu" style="display: none;">
+            <li id="add" onclick="getproductInsert()">
+                <div  >
+                    <span>Add Product</span>  
+                </div>
+            </li>
+            <li id="product" onclick="getProduct()">
+                <div  >
+                    <span>Products</span>  
+                </div>
+            </li>
+            <li id="customer" onclick="getCustomer()">
+                <div  >
+                    <span>Customers</span>  
+                </div>
+            </li>
+            <li id="order" onclick="getOrderBody()">
+                <div  >
+                    <span>Orders</span>  
+                </div>
+            </li>
+        </a>
+        
+        <li class="redirect" onclick="window.location.href = 'http://localhost:3000';">
+                <div>
+                    <i class="fas fa-user"></i>
+                    <span>Customer</span>
+                </div>
+            </li>
+            <li class="redirect" id="adminInsert" onclick="getadmininsert()">
+              <div >
+                  <i class="fas fa-plus"></i>
+                  <span>Add admin</span>
+              </div>
+          </li>
+            <li class="logout">
+                <div class="redirect" onclick="logOut()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>  
+                </div>   
+            </li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="header-wrapper">
+        <div class="header-title">
+            
+            <h2>E-commerce Dashboard</h2>
+            <span>Here's what's going on your business.</span>
+            </div>
+        </div>
+        <div class="content-details" id="dashboard-header">
+            <div class="content"><i class="fas fa-shopping-cart"></i> <span id="totalOrders">Orders</span></div>
+        <div class="content"><i class="fas fa-users"></i> <span id="totalCustomers"> Customers</span></div>
+    <div class="content"><i class="fas fa-box"></i> <span id="totalNetworthSold">Nrs worth Product Sold</span></div>
+        </div>
+        <div class="all-content" id="all-content">
+            <div>
+        <div class="top-product">
+            <table>
+                <tr>
+                    <td colspan="2">Highest Sold Product</td>
+                </tr>
+                <tr>
+                    <td rowspan="7"><img src="/1.jpg" class="product-image" id="ProductImage"></td>
+                </tr>
+                <tr style="visibility: hidden;">
+                    <td>a</td>
+                </tr>
+                <tr style="visibility: hidden;">
+                    <td>a</td>
+                </tr>
+                <tr>
+                    <td id="productName">item Name</td>
+                </tr>
+                
+                <tr>
+                    <td id="productQuantity">Quantity: totalQuantity</td>
+                </tr>
+                <tr style="visibility: hidden;">
+                    <td>a</td>
+                </tr>
+                <tr style="visibility: hidden;">
+                    <td>a</td>
+                </tr>
+            </table>
+            
+            </div>
+            <div class ="content-box">
+                <div class="chart-bar">
+                    <div class="header-wrapper">Paying Customer Distribution</div>
+                    <div class="outter-circle">
+                        <div class="fill"></div>
+                        <span id="userPercent"><%= result.outerResult.userPercent.toFixed(2) %></span>%
+                    </div>
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="330px" height="280px">
+                        <defs>
+                          <linearGradient id="GradientColor">
+                            <stop offset="0%" stop-color="#DA22FF" />
+                            <stop offset="100%" stop-color="#9733EE" />
+                          </linearGradient>
+                        </defs>
+                        <circle cx="135" cy="107" r="90" stroke-linecap="round" stroke="url(#GradientColor)" />
+                      </svg>
+                        <div style="position: absolute; bottom: 100px; left: 40vh; display: flex;">
+                        <div style="height: 20px; width: 20px; background: linear-gradient(45deg, #DA22FF, #9733EE);"></div><div>Paying</div></div>
+                        <div style="position: absolute; bottom: 60px; left: 35vh; display: flex;">
+                        <div style="height: 20px; width: 20px; background-color: #ddd;"></div><div>Non-Paying</div></div>
+                        
+                </div>    
+    </div>
+    </div>
+            <div class="stock-graph" id="chartContainer">
+
+            </div> 
+</div>
+</div>
+
+<script>
+    function redirectTo(path){
+        window.location.href=path;
+    }
+</script>
+<script>
+    
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $('.menu-btn').click(function(){
+            $('.sub-menu').slideToggle();
+            $('.dropdown').toggleClass('rotate');
+    }); 
+    });
+</script>
+<script>
+    function logOut(){
+        if(confirm('Are you sure you want to log out?')){
+            redirectTo('/logout');
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+  <script type="text/javascript" src="https://cdn.canvasjs.com/canvasjs.stock.min.js"></script>
+  <script>
+   window.onload = async function () {
+    try {
+        const response = await axios.get('http://localhost:8000/checkEntry');
+        const entryMessage = response.data.entryMessage;
+        if (entryMessage === 'Admin session active') {
+            const response = await axios.get('http://localhost:8000/adminPageContent');
+            const dashboardValue= response.data.result;  
+            console.log(dashboardValue.graphResult);
+          document.getElementById('dashboard-body').style.visibility="visible";
+          document.getElementById('totalOrders').innerText=`${dashboardValue.outerResult.orderCount} Orders`;
+          document.getElementById('totalCustomers').innerText=`${dashboardValue.outerResult.customerCount} Customers`;
+          document.getElementById('totalNetworthSold').innerText=`Rs ${dashboardValue.outerResult.productWorth} worth Product sold`;
+          document.getElementById('productName').innerText=` ${dashboardValue.innerResult.itemName}`;
+          document.getElementById('productQuantity').innerText=`Quantity: ${dashboardValue.innerResult.totalQuantity}`;
+          document.getElementById('userPercent').innerText=`${dashboardValue.outerResult.userPercent.toFixed(2)}`;
+          document.getElementById('ProductImage').src=`${dashboardValue.innerResult.itemImage1}`;
+       
+          var yourDataString = JSON.stringify(dashboardValue.graphResult);
+          var yourData = JSON.parse(yourDataString);
+          if(!dashboardValue.adminPowerResult.addPower){
+            document.getElementById('add').style.display='none';
+          }
+          if(!dashboardValue.adminPowerResult.adminPower){
+            document.getElementById('adminInsert').style.display='none';
+          }
+
+
+      // Aggregate total prices for each timestamp
+      var aggregatedData = {};
+      for (var i = 0; i < yourData.length; i++) {
+        var timestamp = yourData[i].TimeStamp;
+        var totalPrice = yourData[i].TotalPrice;
+
+        if (aggregatedData[timestamp]) {
+          aggregatedData[timestamp] += totalPrice;
+        } else {
+          aggregatedData[timestamp] = totalPrice;
+        }
+      }
+
+      var data = [];
+      var dataSeries = {
+        type: "spline"
+      };
+      var dataPoints = [];
+
+      // Convert TotalPrice and TimeStamp data to data points
+      for (var timestamp in aggregatedData) {
+        var total = aggregatedData[timestamp];
+        var date = new Date(timestamp);
+
+        dataPoints.push({
+          x: date,
+          y: total
+        });
+      }
+
+      dataSeries.dataPoints = dataPoints;
+      data.push(dataSeries);
+
+      var stockChart = new CanvasJS.StockChart("chartContainer", {
+        title: {
+          text: "Daily Sales",
+          fontFamily: 'Poppins',
+        },
+        animationEnabled: true,
+        exportEnabled: true,
+        width: 650, // Adjust the width as needed
+        height: 500, // Adjust the height as needed
+        charts: [{
+          axisX: {
+            crosshair: {
+              enabled: true,
+              snapToDataPoint: true
+            },
+            valueFormatString: "DD MMM YYYY HH:mm:ss", // Adjust format as needed
+            fontFamily: 'Poppins',
+          },
+          axisY: {
+            crosshair: {
+              enabled: true,
+            },
+            fontFamily: 'Poppins',
+          },
+          data: data
+        }],
+        rangeSelector: {
+          inputFields: {
+            startValue: new Date(Object.keys(aggregatedData)[0]),
+            endValue: new Date(Object.keys(aggregatedData)[Object.keys(aggregatedData).length - 1]),
+            valueFormatString: "DD MMM YYYY HH:mm:ss", // Adjust format as needed
+            fontFamily: 'Poppins',
+          },
+          buttons: [{
+            label: "1M",
+            range: 1,
+            rangeType: "month"
+          }, {
+            label: "3M",
+            range: 3,
+            rangeType: "month"
+          }, {
+            label: "6M",
+            range: 6,
+            rangeType: "month"
+          }, {
+            label: "YTD",
+            rangeType: "ytd"
+          }, {
+            label: "1Y",
+            range: 1,
+            rangeType: "year"
+          }, {
+            label: "All",
+            rangeType: "all"
+          }]
+        }
+      });
+
+      stockChart.render();
+  
+      const userPercent = document.getElementById('userPercent').innerText;
+  
+    const dashOffset = 560 - (560 * userPercent / 100);
+
+    
+    document.documentElement.style.setProperty('--user-percent-offset', `${dashOffset}px`);
+        } else {
+            alert('Session logged out! Please log in again');
+            redirectTo('/');
+        }
+
+    } catch (error) {
+        alert('Error making GET request:\n' + error.message);
+    }
+}
+
+  </script>
+
+<script>
+  async function getOrderBody () {
+  try {
+      
+      const response = await axios.get('http://localhost:8000/adminPage/viewOrder');
+      const item = response.data.item;
+          var orderBody = `
+  <div class="customer-table">
+      <table class="styled-table">
+          <thead>
+              <tr>
+                  <th>Order ID</th>
+                  <th>User ID</th>
+                  <th>Product ID</th>
+                  <th>Quantity</th>
+                  <th>Total Price</th>
+                  <th>TimeStamp</th>
+              </tr>
+          </thead>
+          <tbody>`;
+
+  if (item.length > 0) {
+      for (var i = 0; i < item.length; i++) {
+          orderBody += `
+          <tr>
+              <td>${item[i].orderId}</td>
+              <td>${item[i].userId}</td>
+              <td>${item[i].productId}</td>
+              <td>${item[i].Quantity}</td>
+              <td>${item[i].TotalPrice}</td>
+              <td>${item[i].TimeStamp}</td>
+          </tr>`;
+      }
+  } else {
+      orderBody += `
+          <tr>
+              <td colspan="6">
+                  <h1>No orders found</h1>
+              </td>
+          </tr>`;
+  }
+
+  orderBody += `
+          </tbody>
+      </table>
+  </div>`;
+  document.getElementById('all-content').innerHTML=orderBody;
+  document.getElementById('dashboard-header').style.display='none';  
+  const allDivs = document.querySelectorAll('li');
+    allDivs.forEach(li => {
+    li.classList.remove('active');
+    });  
+    document.getElementById('order').classList.add('active');  
+      
+      
+  }
+  catch (error) {
+      alert('Error making GET request:\n' + error.message);
+  }
+}
+
+  
+</script>
+<script>
+  async function insertProduct () {
+
+const Id = document.getElementById('Id').value;
+const Price = document.getElementById('Price').value;
+const Comment = document.getElementById('Comment').value;
+const Quantity = document.getElementById('Quantity').value;
+const Name = document.getElementById('Name').value;
+const Image1 = document.getElementById('Image1').files[0];
+const Image2 = document.getElementById('Image2').files[0];
+const Image3 = document.getElementById('Image3').files[0]; 
+const categoryName = document.getElementById('category').value;
+
+
+const formData = new FormData();
+formData.append('Id', Id);
+formData.append('Price', Price);
+formData.append('Comment', Comment);
+formData.append('Quantity', Quantity);
+formData.append('Name', Name);
+formData.append('Image1', Image1);
+formData.append('Image2', Image2);
+formData.append('Image3', Image3);
+formData.append('category',categoryName);
+      try {
+          const response = await axios.post('/adminPage/productInsert', formData);
+          const status = response.data.message;
+
+          if(status==='Product inserted successfully!'){
+              alert(status);
+        redirectTo('/adminPage');
+      }
+      else{
+          alert(status);
+          redirectTo('/adminPage');
+      }
+    } catch (error) {
+      alert('Error making POST request:\n' + error.message);
+    }
+  }
+</script>
+
+<script>
+  function getproductInsert(){
+  var productinsertHtml=`<div class="table-bar">
+              <form action="/adminPage/productInsert" method="post" id="productInsertForm" enctype="multipart/form-data">
+                  <table class="styled-table">
+                      <thead style="font-family:'Times New Roman', Times, serif;font-size: 24px;"><tr>
+                          <th colspan="2">Inserting A Product</th>
+                      </tr></thead>
+                      <tbody>
+                          <tr>
+                              <td><label for="Id"> ID:</label></td>
+                              <td><input type="number" required placeholder="Product-ID(xxx-xxx-xxx)"  name="Id" id="Id"></td>
+                          </tr>
+                          <tr>
+                              <td><label for="Name">Name:</label></td>
+                              <td><input type="text" name="Name" id="Name" required placeholder="Product-Name" ></td>
+                          </tr>
+                          <tr>
+                            <td><label for="category">Category:</td>
+                            <td>
+                                <select id="category" name="category" required>
+                                    <option disabled selected>Select a Category</option>
+                                    <option value="1">MakeUp</option>
+                                    <option value="2">SkinCare</option>
+                                    <option value="3">Tools and Accessories</option>
+                                    <option value="4">Fragrance</option>
+                                    <option value="5">Lip Product</option>
+                                    <option value="6">Body and Haircare</option>
+                                    <option value="7">Fragrance</option>
+                                    <option value="8">Eye Product</option>
+                                </select>    
+                            </td>
+                          </tr>
+                          <tr>
+                              <td><label for="Price">Price:</label></td>
+                              <td><input size="20" type="number" required placeholder="Product-Price" name="Price" id="Price" class="price"></td>
+                          </tr>
+                          <tr>
+                              <td><label for="Quantity">Product Quantity:</label></td>
+                              <td><input type="number" size="20" required placeholder="Quantity" name="Quantity" id="Quantity" class="quantity"></td>
+                          </tr>
+                          <tr>
+                              <td><label for="Comment">Comments on Product:</label></td>
+                              <td><textarea name="Comment" class="comment" id="Comment" rows="4" cols="21"  placeholder="Enter comment here"></textarea></td>
+                          </tr>
+                          <tr>
+                              <td><label for="Image">Product Image:</label></td>
+                              <td><input type="file" name="Image1" id="Image1" required></td>
+                          </tr>
+                          <tr>
+                              <td><label for="Image">Product Image:</label></td>
+                              <td><input type="file" name="Image2" id="Image2" required></td>
+                          </tr>
+                          <tr>
+                              <td><label for="Image">Product Image:</label></td>
+                              <td><input type="file" name="Image3" id="Image3"></td>
+                          </tr>
+                              <tr>
+                          <td colspan="2"> 
+                              <button class="button" onclick="insertProduct()">Submit</button> 
+                          </td>
+                      </tr>
+                  </tbody>
+                  </table>
+              </form>
+          </div>   `;
+          document.getElementById('all-content').innerHTML=productinsertHtml;
+          document.getElementById('dashboard-header').style.display='none'; 
+          const allDivs = document.querySelectorAll('li');
+    allDivs.forEach(li => {
+    li.classList.remove('active');
+    });  
+    document.getElementById('add').classList.add('active');  
+          
+      }
+</script>
+<script>
+  async function getProduct () {
+  try {
+      const response = await axios.get('http://localhost:8000/adminPage/productView');
+      const product = response.data.product;
+      const power= response.data.adminPower.updatePower;
+      var productBody = `
+  <div class="customer-table" id="update-table">
+      <table class="styled-table">
+          <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Action</th>
+              </tr>
+          </thead>
+          <tbody id="itemTableBody">
+`;
+
+if (product.length > 0) {
+  for (var i = 0; i < product.length; i++) {
+      productBody += `
+          <tr>
+              <td>${product[i].itemID}</td>
+              <td>${product[i].itemName}</td>
+              <td>${product[i].itemPrice}</td>
+              <td>${product[i].itemQuantity}</td>
+              <td>
+  <button class="updateProduct" onclick="updateProductDetails(${product[i].itemID},'${product[i].itemName}',${product[i].itemPrice},${product[i].itemQuantity},${power})">Update</button>
+</td>
+
+          </tr>
+      `;
+  }
+} else {
+  productBody += `
+      <tr>
+          <td colspan="5">
+              <h1>No items found</h1>
+          </td>
+      </tr>
+  `;
+}
+
+productBody += `
+          </tbody>
+      </table>
+  </div>
+`;
+
+  document.getElementById('all-content').innerHTML=productBody;
+
+var productHeader=`<div class="customers">
+                <div class="header-title"><h1> Products:</h1></div>
+    <hr>
+    <div style="display:flex;">
+        <button onclick="sortTable(1, 'name')" class="button" >Sort by Name &nbsp <i class="fas fa-arrow-down" id="first-sort"></i></button>
+        <button onclick="sortTable(2, 'price')" class="button">Sort by Price &nbsp <i class="fas fa-arrow-down" id="second-sort"></i></button>
+        <button class="button" onclick="redirectTo('/adminPage')">Go back</button>
+    </div>
+</div>`;
+
+document.getElementById('dashboard-header').innerHTML=productHeader; 
+document.getElementById('dashboard-header').style.display='block';  
+const allDivs = document.querySelectorAll('li');
+    allDivs.forEach(li=> {
+    li.classList.remove('active');
+    });  
+    document.getElementById('product').classList.add('active');  
+    
+  }
+  catch (error) {
+      alert('Error making GET request:\n' + error.message);
+  }
+}
+</script>
+<script>
+  function updateProductDetails(itemid, itemname, itemprice, itemquantity,power){
+          if (!power){
+            alert('You are not authorized!!');
+          }
+          else{
+          var itemID = itemid;
+          var itemName = itemname;
+          var itemPrice = itemprice;
+          var itemQuantity = itemquantity;
+
+          
+          var htmlContent = `
+              <div class="parent-div">
+                  <form action="" method="post" enctype="multipart/form-data">
+                      <table class="styled-table">
+                          <thead style="'Grape Nuts'; font-size: 24px;">
+                              <tr>
+                                  <th colspan="2">Updating A Product</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td><label for="Id"> ID:</label></td>
+                                  <td>${itemID}</td>
+                              </tr>
+                              <tr>
+                                  <td><label for="Name">Name:</label></td>
+                                  <td><input type="text" name="productName" class="name" required value="${itemName}" id="Name" size="20"></td>
+                              </tr>
+                              <tr>
+                                  <td><label for="Price">Price:</label></td>
+                                  <td><input size="20" type="number" required value="${itemPrice}" name="productPrice" id="Price" min="0" class="price"></td>
+                              </tr>
+                              <tr>
+                                  <td><label for="Quantity">Product Quantity:</label></td>
+                                  <td><input type="number" size="20" required value="${itemQuantity}" name="productQuantity" id="Quantity" class="quantity" min="0"></td>
+                              </tr>
+                              <tr>
+                              <td><label for="Image">Product Image:</label></td>
+                              <td><input type="file" name="Image1" id="Image1"></td>
+                          </tr>
+                          <tr>
+                              <td><label for="Image">Product Image:</label></td>
+                              <td><input type="file" name="Image2" id="Image2"></td>
+                          </tr>
+                          <tr>
+                              <td><label for="Image">Product Image:</label></td>
+                              <td><input type="file" name="Image3" id="Image3"></td>
+                          </tr>
+                              <td colspan="2">
+                                <button class="button" onclick="update(${itemID})"> Submit </button>
+                              </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </form>
+              </div>`;
+
+          document.getElementById('update-table').innerHTML = htmlContent;
+          document.getElementById('dashboard-header').style.display='none';
+      }
+    }
+    
+</script>
+<script>
+    async function update(itemID) {
+      
+  
+      const Price = document.getElementById('Price').value;
+      const Quantity = document.getElementById('Quantity').value;
+      const Name = document.getElementById('Name').value;
+      const Image1 = document.getElementById('Image1').files[0] || null;
+      const Image2 = document.getElementById('Image2').files[0] || null;
+      const Image3 = document.getElementById('Image3').files[0] || null;
+ 
+  
+      const formData = new FormData();
+      formData.append('Price', Price);
+      formData.append('Quantity', Quantity);
+      formData.append('Name', Name);
+      formData.append('Image1', Image1);
+      formData.append('Image2', Image2);
+      formData.append('Image3', Image3);
+  
+      try {
+        const response = await axios.post(`/adminPage/productView/update/${itemID}`, formData);
+        const status = response.data.message;
+  
+        if (status) {
+          alert(status);
+          redirectTo('/adminPage');
+        } else {
+          redirectTo('/adminPage');
+        }
+      } catch (error) {
+        alert('Error making POST request:\n' + error.message);
+      }
+    }
+  </script>
+  
+<script>
+  var sortOrders = {
+      price: 'asc',
+      name: 'asc'
+  };
+
+  var isFirstClick = {
+      price: true,
+      name: true
+  };
+
+  function sortTable(sortValue, columnName) {
+      const originalRowsOrder = Array.from(document.getElementById('itemTableBody').getElementsByTagName('tr'));
+      var tableBody = document.getElementById('itemTableBody');
+      var rows = Array.from(originalRowsOrder);
+      var otherColumn = columnName === 'name' ? 'price' : 'name';
+
+      rows.sort(function (a, b) {
+          var valueA = a.cells[sortValue].textContent.trim();
+          var valueB = b.cells[sortValue].textContent.trim();
+          if (sortValue === 4) {
+           
+            valueA = valueA.replace('Rs. ', '').trim();
+            valueB = valueB.replace('Rs. ', '').trim();
+        }
+          
+          if (!isNaN(parseFloat(valueA)) && !isNaN(parseFloat(valueB))) {
+              return sortOrders[columnName] === 'asc' ? parseFloat(valueA) - parseFloat(valueB) : parseFloat(valueB) - parseFloat(valueA);
+          } else {
+              return sortOrders[columnName] === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA);
+          }
+      });
+
+      rows.forEach(function (row) {
+          tableBody.appendChild(row);
+      });
+    
+        var element = document.getElementById(columnName === 'name' ? 'first-sort' : 'second-sort');
+        var elementErase = document.getElementById(columnName === 'name' ? 'second-sort' : 'first-sort');
+        var currentVisibility = window.getComputedStyle(element).visibility;
+    
+      if (isFirstClick[columnName]) {
+        sortOrders[columnName]='desc';
+        element.style.visibility = currentVisibility === 'hidden' ? 'visible' : 'hidden';
+        elementErase.style.visibility = 'hidden';
+        isFirstClick[otherColumn] = true;
+        sortOrders[otherColumn] = 'asc';
+
+      } else {
+        element.style.transform = (element.style.transform === 'rotate(180deg)') ? '' : 'rotate(180deg)';
+        sortOrders[columnName] = sortOrders[columnName] === 'asc' ? 'desc' : 'asc';
+      }
+      isFirstClick[columnName] = false;
+  }
+</script>
+<script>
+        async function insertAdmin(){
+        const Id = document.getElementById('Id').value;
+        const Email = document.getElementById('Email').value;
+        const Password = document.getElementById('Password').value;
+        const formData = {
+        Id, Email,Password
+        };
+
+        try {
+            const response = await axios.post('/adminPage/addAdmin',formData);
+            const status = response.data.message;
+
+            if(status==='Admin added successfully!'){
+                alert(status);
+          redirectTo('/adminPage');
+        }
+        else{
+            alert(status);
+        }
+      } catch (error) {
+        alert('Error making POST request:\n' + error.message);
+      }
+    };
+</script>
+<script>
+    function getadmininsert(){
+        var adminHtml=`<div class="table-bar">
+                <form action="/adminPage/addAdmin" method="post" id="adminInsertForm">
+                    <table class="styled-table">
+                        <thead style="font-family:'Times New Roman', Times, serif;font-size: 24px;"><tr>
+                            <td colspan="2">Adding an Admin</td>
+                        </tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><label for="adminId"> User ID:</label></td>
+                                <td><input type="text" required placeholder="User Id"  name="Id" id="Id"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="Email">Email:</label></td>
+                                <td><input type="email" name="Email" id="Email" required placeholder="****@gmail.com" ></td>
+                            </tr>
+                            <tr>
+                                <td><label for="Password">Password:</label></td>
+                                <td><input size="20" type="password" required placeholder="Password" name="Password" id="Password" class="price"></td>
+                            </tr>
+                            <tr>
+                                <td colspan=2>
+                                    <label for="Power">Add Products:</label><input type="checkbox" name="addPower" value='1'>&nbsp;
+                                    <label for="Power">Update Products:</label><input type="checkbox" name="updatePower" value='1' >&nbsp;
+                                    <label for="Power">Add Members:</label><input type="checkbox"  name="adminPower" value='1'>&nbsp;
+                                    </td>
+
+                            </tr>
+                                <tr colspan="2">
+                            <td >
+                                <button class="button" onclick="insertAdmin()"> Submit </button> 
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                </form>
+            </div>    `;
+            document.getElementById('all-content').innerHTML=adminHtml; 
+            document.getElementById('dashboard-header').style.display='none';
+            const allDivs = document.querySelectorAll('li');
+    allDivs.forEach(li => {
+    li.classList.remove('active');
+    });  
+    document.getElementById('adminInsert').classList.add('active');  
+      
+        }
+</script>
+<script>
+    async function getCustomer () {
+  try {
+      const response = await axios.get('http://localhost:8000/adminPage/viewCustomer');
+      const customer = response.data.customer;
+        var customerHtml = '<div class="customer-table">' +
+    '<table class="styled-table">' +
+        '<thead>' +
+            '<tr>' +
+                '<th>ID</th>' +
+                '<th>Name</th>' +
+                '<th>Email</th>' +
+                '<th>Phone</th>' +
+                '<th>Customer\'s Total Spending</th>' +
+            '</tr>' +
+        '</thead>' +
+        '<tbody id="itemTableBody">';
+
+if (customer.length > 0) {
+    for (var i = 0; i < customer.length; i++) {
+        customerHtml += '<tr>' +
+            '<td>' + customer[i].userId + '</td>' +
+            '<td>' + customer[i].customerName + '</td>' +
+            '<td>' + customer[i].customerEmail + '</td>' +
+            '<td>' + customer[i].customerPhone + '</td>' +
+            '<td>Rs. ' + (customer[i].customerTotal ? customer[i].customerTotal : 0) + '</td>' +
+        '</tr>';
+    }
+} else {
+    customerHtml += '<tr>' +
+        '<td colspan="6">' +
+            '<h1>No customer found</h1>' +
+        '</td>' +
+    '</tr>';
+}
+
+customerHtml += '</tbody>' +
+    '</table>' +
+'</div>';
+    document.getElementById('all-content').innerHTML=customerHtml; 
+
+    var customerHeader=`<div class="customers">
+                <div class="header-title"><h1> Customers:</h1></div>
+    <hr>
+    <div style="display:flex;">
+        <button onclick="sortTable(1, 'name')" class="button" >Sort by Name &nbsp <i class="fas fa-arrow-down" id="first-sort"></i></button>
+        <button onclick="sortTable(4, 'price')" class="button">Sort by Spending &nbsp <i class="fas fa-arrow-down" id="second-sort"></i></button>
+        <button class="button" onclick="redirectTo('/adminPage')">Go back</button>
+    </div>
+</div>`;
+
+document.getElementById('dashboard-header').innerHTML=customerHeader; 
+document.getElementById('dashboard-header').style.display='block';    
+const allDivs = document.querySelectorAll('li');
+    allDivs.forEach(li => {
+    li.classList.remove('active');
+    });  
+    document.getElementById('customer').classList.add('active');  
+      
+}
+catch (error) {
+        alert('Error making POST request:\n' + error.message);
+      }
+}
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(getStockInfo, 2000);
+    });
+
+    async function getStockInfo() {
+        var stocksMessage = '';
+        try {
+            const response = await axios.get('http://localhost:8000/adminPage/productStocks');
+            const stocks = response.data.stocks;
+
+            if (stocks.length > 3) {
+                stocksMessage = 'Multiple products are out of stock';
+            } else {
+                for (var i = 0; i < stocks.length; i++) {
+                    stocksMessage += stocks[i].itemName;
+                    if (i < stocks.length - 1) {
+                        stocksMessage += ', ';
+                    }
+                }
+                if (stocks.length > 1) {
+                    stocksMessage += ' are out of stock';
+                } else {
+                    stocksMessage += ' is out of stock';
+                }
+            }
+            if (stocks.length>=1){
+            alert(stocksMessage);
+            }
+        } catch (error) {
+            alert('Error fetching stock quantity');
+        }
+    }
+</script>
+<script>
+     setInterval(async function() {
+    try {
+        const response = await axios.get('http://localhost:8000/checkEntry');
+        const entryMessage = response.data.entryMessage;
+        if (entryMessage !== 'Admin session active') {
+            alert('Session logged out! Please log in again');
+            redirectTo('/');
+        }
+    } catch (error) {
+        console.error('Error checking entry:', error);
+    }
+}, 1000*60);
+
+    
+</script>
+</body>
+</html>
